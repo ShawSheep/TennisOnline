@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  websiteUrl  String
+  logoUrl     String?
+  rackets     Racket[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Racket {
+  id            String       @id @default(cuid())
+  brandId       String
+  brand         Brand        @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  name          String
+  normalizedName String
+  slug          String       @unique
+  series        String
+  imageUrl      String
+  imageSourceUrl String
+  modelYear     Int?
+  generation    String?
+  colorway      String?
+  variantLabel  String?
+  traits        String
+  audience      String
+  description   String
+  sourceUrl     String
+  spec          RacketSpec?
+  prices        Price[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([brandId, normalizedName, series])
+  @@index([series])
+}
+
+model RacketSpec {
+  id              String  @id @default(cuid())
+  racketId        String  @unique
+  racket          Racket  @relation(fields: [racketId], references: [id], onDelete: Cascade)
+  headSizeSqIn    Int?
+  lengthIn        Float?
+  unstrungWeightG Int?
+  swingWeight     Int?
+  balanceMm       Int?
+  stringPattern   String?
+  stiffnessRa     Int?
+}
+
+model Source {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  region      String
+  url         String
+  confidence  Int      @default(80)
+  ruleKey     String
+  prices      Price[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Price {
+  id          String   @id @default(cuid())
+  racketId    String
+  racket      Racket   @relation(fields: [racketId], references: [id], onDelete: Cascade)
+  sourceId    String
+  source      Source   @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  currency    String
+  region      String
+  amount      Float
+  productUrl  String
+  fetchedAt   DateTime
+
+  @@unique([racketId, sourceId, currency, region])
+  @@index([currency, region])
+}
+
+model SyncRun {
+  id          String    @id @default(cuid())
+  sourceName  String
+  status      String
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
+  error       String?
+  imported    Int       @default(0)
+}
