@@ -14,7 +14,9 @@
     "prisma:push": "prisma db push",
     "seed": "tsx prisma/seed.ts",
     "sync:rackets": "tsx scripts/sync-rackets.ts",
-    "expand:catalog": "node scripts/expand-catalog.cjs"
+    "expand:catalog": "node scripts/expand-catalog.cjs",
+    "organize:catalog": "node scripts/organize-catalog.cjs",
+    "repair:images": "node scripts/repair-images.cjs"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",

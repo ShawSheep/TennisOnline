@@ -150,6 +150,7 @@ function variantScore(racket: RacketListItem) {
   const spec = racket.spec;
   const price = lowestPrice(racket);
   let score = 0;
+  score += generationRank(racket) * 6;
   if (price) score += 100;
   if (!racket.imageUrl.startsWith("data:image")) score += 30;
   if (spec?.headSizeSqIn === 100) score += 20;
@@ -159,7 +160,7 @@ function variantScore(racket: RacketListItem) {
 }
 
 function compareVariants(a: RacketListItem, b: RacketListItem) {
-  return (a.spec?.headSizeSqIn ?? 999) - (b.spec?.headSizeSqIn ?? 999) || (a.spec?.unstrungWeightG ?? 999) - (b.spec?.unstrungWeightG ?? 999) || a.name.localeCompare(b.name);
+  return generationRank(b) - generationRank(a) || (a.spec?.headSizeSqIn ?? 999) - (b.spec?.headSizeSqIn ?? 999) || (a.spec?.unstrungWeightG ?? 999) - (b.spec?.unstrungWeightG ?? 999) || a.name.localeCompare(b.name);
 }
 
 function inferYear(name: string) {
@@ -168,6 +169,14 @@ function inferYear(name: string) {
 
 function inferGeneration(name: string) {
   return name.match(/\b(v\d+)\b/i)?.[1] ?? "未标注";
+}
+
+function generationRank(racket: RacketListItem) {
+  const generation = racket.generation ?? inferGeneration(racket.name);
+  const version = generation.match(/v(\d+)/i)?.[1];
+  if (version) return Number(version);
+  if (racket.modelYear) return racket.modelYear / 100;
+  return 0;
 }
 
 function uniqueNumbers(values: Array<number | null | undefined>) {

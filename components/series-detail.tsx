@@ -9,6 +9,7 @@ import { formatPrice, lowestPrice } from "@/lib/racket-utils";
 import { cleanText, cleanTraits, racketIntro, racketPlayers } from "@/lib/racket-profiles";
 import { specBadges, specClass } from "@/lib/spec-classification";
 import { groupPrice, groupSpecSummary, groupTraits, variantMeta, type RacketSeriesGroup } from "@/lib/series-utils";
+import type { RacketListItem } from "@/lib/types";
 
 type Props = {
   group: RacketSeriesGroup;
@@ -30,6 +31,7 @@ export function SeriesDetail({ group }: Props) {
   const allTraits = groupTraits(group);
   const meta = variantMeta(selected);
   const variantOptions = useMemo(() => group.variants, [group.variants]);
+  const variantGroups = useMemo(() => groupVariantsByGeneration(variantOptions), [variantOptions]);
 
   const specRows = [
     ["拍面", selected.spec?.headSizeSqIn ? `${selected.spec.headSizeSqIn} sq in` : "待补充"],
@@ -74,6 +76,46 @@ export function SeriesDetail({ group }: Props) {
               图片来源
               <ExternalLink size={13} />
             </a>
+
+            <div className="mt-4 rounded-lg border border-ink/10 bg-white p-4 shadow-sm">
+              <h2 className="text-sm font-bold text-ink/60">版本 / 型号</h2>
+              <div className="mt-3 space-y-4">
+                {variantGroups.map((generationGroup) => (
+                  <section key={generationGroup.key}>
+                    <div className="flex items-center justify-between gap-3 border-b border-ink/10 pb-2">
+                      <div>
+                        <h3 className="text-base font-bold text-ink">{generationGroup.label}</h3>
+                        <p className="mt-0.5 text-xs text-ink/55">
+                          年份 {generationGroup.year} · 配色 {generationGroup.colorways.join(" / ")}
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-line px-2.5 py-1 text-xs font-bold text-ink/60">{generationGroup.variants.length} 款</span>
+                    </div>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {generationGroup.variants.map((variant) => {
+                        const active = variant.id === selected.id;
+                        const optionMeta = variantMeta(variant);
+                        return (
+                          <button
+                            key={variant.id}
+                            type="button"
+                            onClick={() => setSelectedId(variant.id)}
+                            className={`rounded-md border p-3 text-left transition ${
+                              active ? "border-court bg-court/10 text-court" : "border-ink/10 bg-line/60 hover:border-court"
+                            }`}
+                          >
+                            <span className="block text-sm font-bold">{optionMeta.label}</span>
+                            <span className="mt-1 block text-xs text-ink/55">
+                              拍面 {variant.spec?.headSizeSqIn ?? "待补"} · 重量 {variant.spec?.unstrungWeightG ? `${variant.spec.unstrungWeightG}g` : "待补"} · 线床 {variant.spec?.stringPattern ?? "待补"}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
           </div>
 
           <aside className="space-y-5">
@@ -83,31 +125,6 @@ export function SeriesDetail({ group }: Props) {
               <p className="mt-3 text-base leading-7 text-ink/70">
                 共 {group.variants.length} 个版本，拍面 {summary.head}，重量 {summary.weight}，线床 {summary.patterns}。当前选择：{selected.name}。
               </p>
-            </div>
-
-            <div className="rounded-lg border border-ink/10 bg-white p-4 shadow-sm">
-              <h2 className="text-sm font-bold text-ink/60">型号 / 版本</h2>
-              <div className="mt-3 grid gap-2">
-                {variantOptions.map((variant) => {
-                  const active = variant.id === selected.id;
-                  const optionMeta = variantMeta(variant);
-                  return (
-                    <button
-                      key={variant.id}
-                      type="button"
-                      onClick={() => setSelectedId(variant.id)}
-                      className={`rounded-md border p-3 text-left transition ${
-                        active ? "border-court bg-court/10 text-court" : "border-ink/10 bg-line/60 hover:border-court"
-                      }`}
-                    >
-                      <span className="block text-sm font-bold">{variant.name}</span>
-                      <span className="mt-1 block text-xs text-ink/55">
-                        拍面 {variant.spec?.headSizeSqIn ?? "待补"} · 重量 {variant.spec?.unstrungWeightG ? `${variant.spec.unstrungWeightG}g` : "待补"} · 线床 {variant.spec?.stringPattern ?? "待补"} · 年份 {optionMeta.modelYear} · 配色 {optionMeta.colorway}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -196,4 +213,52 @@ export function SeriesDetail({ group }: Props) {
       </div>
     </main>
   );
+}
+
+function groupVariantsByGeneration(variants: RacketListItem[]) {
+  const map = new Map<string, RacketListItem[]>();
+
+  for (const variant of variants) {
+    const meta = variantMeta(variant);
+    const key = meta.generation === "未标注" ? `unknown-${meta.modelYear}` : meta.generation;
+    map.set(key, [...(map.get(key) ?? []), variant]);
+  }
+
+  return Array.from(map.entries())
+    .map(([key, items]) => {
+      const metas = items.map(variantMeta);
+      const generation = metas.find((item) => item.generation !== "未标注")?.generation ?? "未标注版本";
+      const years = Array.from(new Set(metas.map((item) => item.modelYear).filter((item) => item !== "未标注")));
+      const colorways = Array.from(new Set(metas.map((item) => item.colorway).filter((item) => item !== "未标注")));
+      return {
+        key,
+        label: formatGenerationLabel(generation),
+        year: years.join(" / ") || "未标注",
+        colorways: colorways.length ? colorways : ["未标注"],
+        variants: [...items].sort(compareModelVariant)
+      };
+    })
+    .sort((a, b) => generationRank(b.key) - generationRank(a.key) || a.label.localeCompare(b.label));
+}
+
+function generationRank(key: string) {
+  const version = key.match(/v(\d+)/i)?.[1];
+  if (version) return Number(version);
+  const year = key.match(/20\d{2}/)?.[0];
+  return year ? Number(year) / 100 : 0;
+}
+
+function compareModelVariant(a: RacketListItem, b: RacketListItem) {
+  return (
+    (a.spec?.headSizeSqIn ?? 999) - (b.spec?.headSizeSqIn ?? 999) ||
+    (a.spec?.unstrungWeightG ?? 999) - (b.spec?.unstrungWeightG ?? 999) ||
+    variantMeta(a).label.localeCompare(variantMeta(b).label)
+  );
+}
+
+function formatGenerationLabel(generation: string) {
+  if (generation === "未标注版本") return generation;
+  if (/^v\d+$/i.test(generation)) return generation.toUpperCase();
+  if (/^gen\d+$/i.test(generation)) return `Gen${generation.replace(/\D/g, "")}`;
+  return generation;
 }

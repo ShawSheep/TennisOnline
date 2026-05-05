@@ -2,7 +2,15 @@ import { slugify } from "@/lib/racket-utils";
 
 const tennisWarehouseCodes: Record<string, string> = {
   "Wilson Blade 98 16x19 v9": "WB9816",
+  "Wilson Blade 98 18x20 v9": "WB98V9",
   "Wilson Blade 100 v9": "WB1009",
+  "Wilson Blade 98 16x19 v10": "WB9810",
+  "Wilson Blade 98 18x20 v10": "WB9818",
+  "Wilson Blade 98S v10": "WB98S1",
+  "Wilson Blade 100 v10": "WB1001",
+  "Wilson Blade 100L v10": "WB10L1",
+  "Wilson Blade 104 v10": "WB104V",
+  "Wilson Blade 100 Pro v10": "WB100P",
   "Wilson Pro Staff 97 v14": "W97V14",
   "Wilson Clash 100 v2": "WC100V",
   "Wilson Ultra 100 v4": "WU100V4",
@@ -76,37 +84,49 @@ export function generatedRacketImage(brand: string, name: string) {
   const palette = paletteByBrand[brand] ?? { frame: "#2f7d57", accent: "#c85d38", bg: "#f3f5f1" };
   const shortName = name.replace(/\s+/g, " ");
   const id = slugify(`${brand}-${name}`);
-  const yOffset = (hashCode(id) % 18) - 9;
+  const yOffset = (hashCode(id) % 16) - 8;
+  const accentOffset = (hashCode(`${id}-accent`) % 18) - 9;
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 675" role="img" aria-label="${escapeXml(`${brand} ${name}`)}">
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#17201a" flood-opacity=".16"/>
     </filter>
+    <linearGradient id="paint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${palette.frame}"/>
+      <stop offset="1" stop-color="${palette.accent}"/>
+    </linearGradient>
   </defs>
-  <g transform="translate(224 ${76 + yOffset}) rotate(-22 250 250)" filter="url(#shadow)">
-    <ellipse cx="280" cy="178" rx="132" ry="184" fill="none" stroke="${palette.frame}" stroke-width="28"/>
-    <ellipse cx="280" cy="178" rx="96" ry="146" fill="none" stroke="${palette.accent}" stroke-width="8" opacity=".9"/>
-    ${stringLines(280, 178)}
-    <path d="M246 354 L220 542 Q218 570 245 577 L296 589 Q323 595 331 568 L356 374" fill="${palette.frame}"/>
-    <path d="M237 454 L335 478" stroke="${palette.accent}" stroke-width="11" stroke-linecap="round"/>
-    <path d="M230 500 L323 523" stroke="${palette.accent}" stroke-width="11" stroke-linecap="round"/>
-  </g>
-  <g>
-    <text x="62" y="88" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800" fill="#17201a">${escapeXml(brand)}</text>
-    <text x="62" y="132" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="${palette.frame}">${escapeXml(shortName)}</text>
-  </g>
+  ${racketShape(270, 80 + yOffset, -13, palette.frame, palette.accent, "0.96")}
+  ${racketShape(500, 72 - yOffset, 13, palette.frame, palette.accent, "1")}
+  <text x="74" y="96" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#17201a">${escapeXml(brand)}</text>
+  <text x="74" y="132" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="${palette.frame}">${escapeXml(shortName.slice(0, 36))}</text>
+  <path d="M632 ${150 + accentOffset} h72" stroke="${palette.accent}" stroke-width="10" stroke-linecap="round" opacity=".8"/>
+  <path d="M644 ${178 + accentOffset} h58" stroke="${palette.frame}" stroke-width="8" stroke-linecap="round" opacity=".75"/>
 </svg>`;
 
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
+function racketShape(x: number, y: number, rotate: number, frame: string, accent: string, opacity: string) {
+  return `
+  <g transform="translate(${x} ${y}) rotate(${rotate} 120 250)" filter="url(#shadow)" opacity="${opacity}">
+    <ellipse cx="120" cy="154" rx="88" ry="140" fill="none" stroke="${frame}" stroke-width="18"/>
+    <ellipse cx="120" cy="154" rx="67" ry="112" fill="none" stroke="${accent}" stroke-width="6" opacity=".9"/>
+    ${stringLines(120, 154)}
+    <path d="M98 286 L78 470 Q76 492 96 498 L132 508 Q154 514 160 490 L182 300" fill="${frame}"/>
+    <path d="M91 386 L166 405" stroke="${accent}" stroke-width="9" stroke-linecap="round"/>
+    <path d="M86 426 L155 443" stroke="${accent}" stroke-width="9" stroke-linecap="round"/>
+    <path d="M78 470 Q76 492 96 498 L132 508 Q154 514 160 490 L164 458 L84 438 Z" fill="#20251f" opacity=".9"/>
+  </g>`;
+}
+
 function stringLines(cx: number, cy: number) {
-  const vertical = [-72, -48, -24, 0, 24, 48, 72]
-    .map((offset) => `<line x1="${cx + offset}" y1="${cy - 132}" x2="${cx + offset}" y2="${cy + 132}" stroke="#17201a" stroke-width="2" opacity=".28"/>`)
+  const vertical = [-48, -32, -16, 0, 16, 32, 48]
+    .map((offset) => `<line x1="${cx + offset}" y1="${cy - 96}" x2="${cx + offset}" y2="${cy + 96}" stroke="#17201a" stroke-width="1.5" opacity=".28"/>`)
     .join("");
-  const horizontal = [-102, -68, -34, 0, 34, 68, 102]
-    .map((offset) => `<line x1="${cx - 86}" y1="${cy + offset}" x2="${cx + 86}" y2="${cy + offset}" stroke="#17201a" stroke-width="2" opacity=".24"/>`)
+  const horizontal = [-72, -48, -24, 0, 24, 48, 72]
+    .map((offset) => `<line x1="${cx - 58}" y1="${cy + offset}" x2="${cx + 58}" y2="${cy + offset}" stroke="#17201a" stroke-width="1.5" opacity=".24"/>`)
     .join("");
   return vertical + horizontal;
 }

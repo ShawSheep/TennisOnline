@@ -14,9 +14,24 @@ const brands = {
 };
 
 const rackets = [
-  ["Wilson", "Blade 98 18x20 v9", "Blade", 259, 1899, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 322, balanceMm: 320, stringPattern: "18x20", stiffnessRa: 62 }],
-  ["Wilson", "Blade 100L v9", "Blade", 239, 1699, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 285, swingWeight: 312, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 61 }],
-  ["Wilson", "Blade 104 v9", "Blade", 249, 1799, { headSizeSqIn: 104, lengthIn: 27.5, unstrungWeightG: 290, swingWeight: 318, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 60 }],
+  ["Wilson", "Blade 98 16x19 v9", "Blade", 259, 1899, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 320, balanceMm: 320, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2024, generation: "v9", colorway: "Emerald Green", variantLabel: "98 16x19" }],
+  ["Wilson", "Blade 98 18x20 v9", "Blade", 259, 1899, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 322, balanceMm: 320, stringPattern: "18x20", stiffnessRa: 62 }, { modelYear: 2024, generation: "v9", colorway: "Emerald Green", variantLabel: "98 18x20" }],
+  ["Wilson", "Blade 100L v9", "Blade", 239, 1699, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 285, swingWeight: 312, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 61 }, { modelYear: 2024, generation: "v9", colorway: "Emerald Green", variantLabel: "100L" }],
+  ["Wilson", "Blade 100 v9", "Blade", 249, 1799, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 300, swingWeight: 318, balanceMm: 320, stringPattern: "16x19", stiffnessRa: 61 }, { modelYear: 2024, generation: "v9", colorway: "Emerald Green", variantLabel: "100" }],
+  ["Wilson", "Blade 104 v9", "Blade", 249, 1799, { headSizeSqIn: 104, lengthIn: 27.5, unstrungWeightG: 290, swingWeight: 318, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 60 }, { modelYear: 2024, generation: "v9", colorway: "Emerald Green", variantLabel: "104" }],
+  ["Wilson", "Blade 98 16x19 v10", "Blade", 269, 2099, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 322, balanceMm: 320, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "98 16x19" }],
+  ["Wilson", "Blade 98 18x20 v10", "Blade", 269, 2099, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 323, balanceMm: 320, stringPattern: "18x20", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "98 18x20" }],
+  ["Wilson", "Blade 98S v10", "Blade", 259, 1999, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 295, swingWeight: 318, balanceMm: 325, stringPattern: "18x16", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "98S" }],
+  ["Wilson", "Blade 100 v10", "Blade", 259, 1999, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 300, swingWeight: 320, balanceMm: 320, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "100" }],
+  ["Wilson", "Blade 100L v10", "Blade", 239, 1799, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 285, swingWeight: 312, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "100L" }],
+  ["Wilson", "Blade 100UL v10", "Blade", 229, 1699, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 265, swingWeight: 300, balanceMm: 335, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "100UL" }],
+  ["Wilson", "Blade 101 Team v10", "Blade", 219, 1599, { headSizeSqIn: 101, lengthIn: 27, unstrungWeightG: 275, swingWeight: 305, balanceMm: 335, stringPattern: "16x19", stiffnessRa: 63 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "101 Team" }],
+  ["Wilson", "Blade 104 v10", "Blade", 249, 1799, { headSizeSqIn: 104, lengthIn: 27.5, unstrungWeightG: 290, swingWeight: 318, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "104" }],
+  ["Wilson", "Blade 98 Pro 16x19 v10", "Blade", 279, 2199, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 324, balanceMm: 320, stringPattern: "16x19", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "98 Pro 16x19" }],
+  ["Wilson", "Blade 98 Pro 18x20 v10", "Blade", 279, 2199, { headSizeSqIn: 98, lengthIn: 27, unstrungWeightG: 305, swingWeight: 325, balanceMm: 320, stringPattern: "18x20", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "98 Pro 18x20" }],
+  ["Wilson", "Blade 100 Pro v10", "Blade", 279, 2199, { headSizeSqIn: 100, lengthIn: 27.25, unstrungWeightG: 295, swingWeight: 325, balanceMm: 325, stringPattern: "16x20", stiffnessRa: 62 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "100 Pro" }],
+  ["Wilson", "Blade 26 v10", "Blade", 129, 899, { headSizeSqIn: 100, lengthIn: 26, unstrungWeightG: 255, swingWeight: 270, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 63 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "26 Junior" }],
+  ["Wilson", "Blade 25 v10", "Blade", 119, 799, { headSizeSqIn: 100, lengthIn: 25, unstrungWeightG: 245, swingWeight: 255, balanceMm: 325, stringPattern: "16x19", stiffnessRa: 63 }, { modelYear: 2026, generation: "v10", colorway: "Championship Green", variantLabel: "25 Junior" }],
   ["Wilson", "Clash 100 Pro v2", "Clash", 269, 1999, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 310, swingWeight: 326, balanceMm: 315, stringPattern: "16x20", stiffnessRa: 55 }],
   ["Wilson", "Clash 100L v2", "Clash", 239, 1699, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 280, swingWeight: 309, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 55 }],
   ["Wilson", "Ultra 100L v4", "Ultra", 239, 1699, { headSizeSqIn: 100, lengthIn: 27, unstrungWeightG: 280, swingWeight: 312, balanceMm: 330, stringPattern: "16x19", stiffnessRa: 69 }],
@@ -76,6 +91,10 @@ function normalize(name) {
   return name.toLowerCase().replace(/[™®]/g, "").replace(/\b(v\d+|gen\s*\d+|202\d)\b/g, "").replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
 }
 
+function normalizeVariantKey(name) {
+  return name.toLowerCase().replace(/[™®]/g, "").replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+
 function slugify(input) {
   return input.toLowerCase().replace(/[™®]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
@@ -132,48 +151,53 @@ function description(name, series, spec) {
 async function main() {
   let imported = 0;
 
-  for (const [brandName, name, series, usd, cny, spec] of rackets) {
+  for (const [brandName, name, series, usd, cny, spec, metaInput = {}] of rackets) {
     const meta = brands[brandName];
+    const inferredGeneration = metaInput.generation ?? generation(name);
+    const inferredYear = metaInput.modelYear ?? year(name);
+    const colorway = metaInput.colorway ?? null;
+    const variantLabel = metaInput.variantLabel ?? (name.replace(new RegExp(`^${series}\\s*`, "i"), "").trim() || name);
+    const normalizedName = inferredGeneration ? normalizeVariantKey(name) : normalize(name);
     const brand = await prisma.brand.upsert({
       where: { slug: meta.slug },
       update: { name: brandName, websiteUrl: meta.websiteUrl, logoUrl: meta.logoUrl },
       create: { name: brandName, slug: meta.slug, websiteUrl: meta.websiteUrl, logoUrl: meta.logoUrl }
     });
     const sourceUrl = `${meta.websiteUrl}?q=${encodeURIComponent(name)}`;
-    const racket = await prisma.racket.upsert({
-      where: { brandId_normalizedName_series: { brandId: brand.id, normalizedName: normalize(name), series } },
-      update: {
-        name,
-        slug: slugify(`${meta.slug}-${name}`),
-        modelYear: year(name),
-        generation: generation(name),
-        colorway: null,
-        variantLabel: name,
-        imageUrl: imageUrl(brandName, name),
-        imageSourceUrl: sourceUrl,
-        sourceUrl,
-        traits: JSON.stringify(traits(name, series, spec)),
-        audience: audience(name, spec),
-        description: description(name, series, spec)
-      },
-      create: {
+    const existing = await prisma.racket.findFirst({
+      where: {
         brandId: brand.id,
-        name,
-        normalizedName: normalize(name),
-        slug: slugify(`${meta.slug}-${name}`),
         series,
-        modelYear: year(name),
-        generation: generation(name),
-        colorway: null,
-        variantLabel: name,
-        imageUrl: imageUrl(brandName, name),
-        imageSourceUrl: sourceUrl,
-        sourceUrl,
-        traits: JSON.stringify(traits(name, series, spec)),
-        audience: audience(name, spec),
-        description: description(name, series, spec)
+        OR: [{ name }, { normalizedName }]
       }
     });
+    const racketData = {
+        name,
+        slug: slugify(`${meta.slug}-${name}`),
+        normalizedName,
+        modelYear: inferredYear,
+        generation: inferredGeneration,
+        colorway,
+        variantLabel,
+        imageUrl: imageUrl(brandName, name),
+        imageSourceUrl: sourceUrl,
+        sourceUrl,
+        traits: JSON.stringify(traits(name, series, spec)),
+        audience: audience(name, spec),
+        description: description(name, series, spec)
+      };
+    const racket = existing
+      ? await prisma.racket.update({
+          where: { id: existing.id },
+          data: racketData
+        })
+      : await prisma.racket.create({
+          data: {
+        brandId: brand.id,
+        series,
+        ...racketData
+          }
+        });
 
     await prisma.racketSpec.upsert({ where: { racketId: racket.id }, update: spec, create: { racketId: racket.id, ...spec } });
 

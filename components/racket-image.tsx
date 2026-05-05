@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { generatedRacketImage } from "@/lib/racket-images";
 
 type Props = {
@@ -11,19 +11,26 @@ type Props = {
 };
 
 export function RacketImage({ brand, name, src, className }: Props) {
-  const [imageSrc, setImageSrc] = useState(normalizeInitialSrc(src, brand, name));
+  const fallbackSrc = useMemo(() => generatedRacketImage(brand, name), [brand, name]);
+  const [imageSrc, setImageSrc] = useState(() => normalizeInitialSrc(src, fallbackSrc));
+
+  useEffect(() => {
+    setImageSrc(normalizeInitialSrc(src, fallbackSrc));
+  }, [fallbackSrc, src]);
 
   return (
     <img
       src={imageSrc}
       alt={`${brand} ${name}`}
       className={`${className ?? ""} racket-product-image`}
-      onError={() => setImageSrc(generatedRacketImage(brand, name))}
+      onError={() => {
+        if (imageSrc !== fallbackSrc) setImageSrc(fallbackSrc);
+      }}
     />
   );
 }
 
-function normalizeInitialSrc(src: string, brand: string, name: string) {
-  if (src.startsWith("data:image/svg+xml")) return generatedRacketImage(brand, name);
+function normalizeInitialSrc(src: string | null | undefined, fallbackSrc: string) {
+  if (!src || src.startsWith("data:image/svg+xml")) return fallbackSrc;
   return src;
 }

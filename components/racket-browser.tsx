@@ -15,17 +15,13 @@ type Props = {
   lastSync: string | null;
 };
 
-type SortKey = "relevance" | "price" | "weight" | "head";
-type PriceBand = "ALL" | "BUDGET" | "MID" | "PREMIUM";
+type SortKey = "relevance" | "variants";
 
 export function RacketBrowser({ rackets, lastSync }: Props) {
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState("全部品牌");
   const [trait, setTrait] = useState<Trait | "全部特点">("全部特点");
-  const [weight, setWeight] = useState("ALL");
-  const [head, setHead] = useState("ALL");
   const [specGroup, setSpecGroup] = useState<SpecClass | "全部规格">("全部规格");
-  const [priceBand, setPriceBand] = useState<PriceBand>("ALL");
   const [sort, setSort] = useState<SortKey>("relevance");
   const [compareKeys, setCompareKeys] = useState<string[]>([]);
 
@@ -33,15 +29,13 @@ export function RacketBrowser({ rackets, lastSync }: Props) {
   const groups = useMemo(() => groupRacketsBySeries(rackets), [rackets]);
 
   const filtered = useMemo(() => {
-    const items = groups.filter((group) => groupMatches(group, { query, brand, trait, specGroup, priceBand, weight, head }));
+    const items = groups.filter((group) => groupMatches(group, { query, brand, trait, specGroup, priceBand: "ALL", weight: "ALL", head: "ALL" }));
 
     return [...items].sort((a, b) => {
-      if (sort === "price") return (groupPrice(a)?.amount ?? Number.MAX_SAFE_INTEGER) - (groupPrice(b)?.amount ?? Number.MAX_SAFE_INTEGER);
-      if (sort === "weight") return (a.defaultVariant.spec?.unstrungWeightG ?? 999) - (b.defaultVariant.spec?.unstrungWeightG ?? 999);
-      if (sort === "head") return (a.defaultVariant.spec?.headSizeSqIn ?? 999) - (b.defaultVariant.spec?.headSizeSqIn ?? 999);
+      if (sort === "variants") return b.variants.length - a.variants.length || `${a.brand} ${a.series}`.localeCompare(`${b.brand} ${b.series}`);
       return `${a.brand} ${a.series}`.localeCompare(`${b.brand} ${b.series}`);
     });
-  }, [brand, groups, head, priceBand, query, sort, specGroup, trait, weight]);
+  }, [brand, groups, query, sort, specGroup, trait]);
 
   const compared = groups.filter((group) => compareKeys.includes(group.key));
 
@@ -78,7 +72,7 @@ export function RacketBrowser({ rackets, lastSync }: Props) {
         </header>
 
         <section className="sticky top-0 z-20 rounded-lg border border-ink/10 bg-white/95 p-3 shadow-soft backdrop-blur">
-          <div className="grid gap-3 lg:grid-cols-[minmax(220px,1fr)_repeat(7,minmax(124px,auto))]">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-[minmax(260px,1fr)_repeat(4,minmax(140px,auto))]">
             <label className="block">
               <span className="mb-1 block h-[18px] text-xs font-semibold text-transparent">搜索</span>
               <div className="relative">
@@ -95,32 +89,11 @@ export function RacketBrowser({ rackets, lastSync }: Props) {
             <FilterSelect label="特点" value={trait} onChange={(value) => setTrait(value as Trait | "全部特点")} options={["全部特点", ...TRAITS]} />
             <FilterSelect label="规格" value={specGroup} onChange={(value) => setSpecGroup(value as SpecClass | "全部规格")} options={["全部规格", ...SPEC_CLASSES]} />
             <FilterSelect
-              label="重量"
-              value={weight}
-              onChange={setWeight}
-              options={["ALL", "LIGHT", "MID", "HEAVY"]}
-              optionLabels={{ ALL: "全部", LIGHT: "≤285g", MID: "286-305g", HEAVY: ">305g" }}
-            />
-            <FilterSelect
-              label="价格"
-              value={priceBand}
-              onChange={(value) => setPriceBand(value as PriceBand)}
-              options={["ALL", "BUDGET", "MID", "PREMIUM"]}
-              optionLabels={{ ALL: "全部", BUDGET: "入门价", MID: "主流价", PREMIUM: "高端价" }}
-            />
-            <FilterSelect
-              label="拍面"
-              value={head}
-              onChange={setHead}
-              options={["ALL", "SMALL", "MID", "OVERSIZE"]}
-              optionLabels={{ ALL: "全部", SMALL: "≤98", MID: "99-100", OVERSIZE: ">100" }}
-            />
-            <FilterSelect
               label="排序"
               value={sort}
               onChange={(value) => setSort(value as SortKey)}
-              options={["relevance", "price", "weight", "head"]}
-              optionLabels={{ relevance: "品牌系列", price: "低价优先", weight: "重量", head: "拍面" }}
+              options={["relevance", "variants"]}
+              optionLabels={{ relevance: "品牌系列", variants: "版本数量" }}
               icon={<ArrowUpDown size={15} />}
             />
           </div>
