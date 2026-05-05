@@ -10,6 +10,17 @@ type Props = {
   }>;
 };
 
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const groups = groupRacketsBySeries(await getRackets());
+
+  return groups.map((group) => ({
+    brandSlug: group.brandSlug,
+    seriesSlug: group.slug
+  }));
+}
+
 export default async function SeriesPage({ params }: Props) {
   const { brandSlug, seriesSlug } = await params;
   const groups = groupRacketsBySeries(await getRackets());

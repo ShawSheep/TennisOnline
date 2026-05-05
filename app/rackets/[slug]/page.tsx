@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { getRacket } from "@/lib/data";
+import { getRacket, getRackets } from "@/lib/data";
 import { formatPrice } from "@/lib/racket-utils";
 import { specBadges, specClass } from "@/lib/spec-classification";
 import { cleanText, cleanTraits, racketIntro, racketPlayers } from "@/lib/racket-profiles";
@@ -11,6 +11,16 @@ import { RacketImage } from "@/components/racket-image";
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const rackets = await getRackets();
+
+  return rackets.map((racket) => ({
+    slug: racket.slug
+  }));
+}
 
 export default async function RacketDetailPage({ params }: Props) {
   const { slug } = await params;
